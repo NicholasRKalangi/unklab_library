@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../css/library.css">
+    <title>Unklab Library</title>
+    <style>[x-cloak] { display: none !important; }</style>
+</head>
+<body>
+    <div class="logo-bar">
+        <div class="login-heading">
+            <img src="../../images/unklab_logo.png" class="main-logo" alt="Unklab logo">
+            <h1>Unklab Library</h1>
+        </div>
+    </div>
+    <div class="staff-cd-div">
+        <div class="book-div-staff user-search-box" x-data="bookSearch()" x-init="findBooks()">
+            <h1 class="secondary-title">Search book:</h1>
+            <div class="search-div">
+                <input type="text" x-model="search" @keydown.enter="findBooks()" aria-label="Search books">
+                <button type="button" @click="findBooks()">Search</button>
+            </div>
+            <div id="book-display">
+                <p class="library-error-message" x-cloak x-show="error" x-text="error"></p>
+                <p class="library-empty-message" x-cloak x-show="!error && books.length === 0">No books found.</p>
+                <template x-for="book in books" :key="book.title + '|' + book.author + '|' + (book.borrowedAt || '')">
+                    <aside class="book-card" :class="{ 'book-card-borrowed': book.borrowed }">
+                        <p><strong>Title:</strong> <span x-text="book.title"></span></p>
+                        <p><strong>Author:</strong> <span x-text="book.author"></span></p>
+                        <p><strong>Status/Room:</strong> <span x-text="book.status"></span></p>
+                        <template x-if="book.borrowed">
+                            <div>
+                                <p class="borrowed-status"><strong>Status:</strong> borrowed</p>
+                                <p><strong>Return date:</strong> <span x-text="formatDate(book.dueAt)"></span></p>
+                            </div>
+                        </template>
+                        <p><strong>Description:</strong> <span x-text="book.bookDescription || 'No description'"></span></p>
+                    </aside>
+                </template>
+            </div>
+        </div>
+        <div class="staff-add-book-div donate-book-box">
+            <h1 class="secondary-title">Donate a book</h1>
+            <div class="book-input"><p>Title:</p><input type="text" id="bookTitle" required></div>
+            <div class="book-input"><p>Author:</p><input type="text" id="bookAuthor" required></div>
+            <div class="book-input"><p>Status / Room:</p><input type="text" id="bookStatus" required></div>
+            <div class="book-input"><p>Book Description:</p><textarea id="bookDescription" rows="4" required></textarea></div>
+            <button id="donate-book" type="button">DONATE BOOK</button>
+            <p class="donation-help">Your donation will be sent to library staff for approval.</p>
+        </div>
+    </div>
+    <section id="popular-books-dashboard" class="library-extra-section dashboard-section" aria-labelledby="dashboard-title">
+        <div class="dashboard-header">
+            <h1 id="dashboard-title" class="secondary-title">Frequently borrowed books</h1>
+            <label class="dashboard-period-label">Period:
+                <select id="dashboard-period">
+                    <option value="7">Last 7 days</option>
+                    <option value="30">Last 30 days</option>
+                    <option value="90">Last 90 days</option>
+                    <option value="365">Last year</option>
+                    <option value="all" selected>All time</option>
+                </select>
+            </label>
+        </div>
+        <div id="dashboard-tiles" class="dashboard-tiles"></div>
+        <h2 class="dashboard-subtitle">Top 10 most borrowed (number of times borrowed)</h2>
+        <div id="dashboard-chart" class="dashboard-chart"></div>
+        <p id="dashboard-rooms" class="dashboard-rooms"></p>
+        <details class="dashboard-table-toggle">
+            <summary>Show as table</summary>
+            <table id="dashboard-table" class="dashboard-table">
+                <thead><tr><th>#</th><th>Title</th><th>Author</th><th>Room</th><th>Times borrowed</th><th>Last borrowed</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </details>
+    </section>
+
+    <a class="back-btn" href="./index.html" aria-label="Back"><img src="../../images/left-arrow.png" class="back-btn-logo" alt="Back"></a>
+    <script defer src="../../js/library.js"></script>
+    <script defer src="../../js/popularBooks.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.9/dist/cdn.min.js"></script>
+</body>
+</html>
